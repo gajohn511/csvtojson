@@ -5,7 +5,10 @@
     "main": "index.ts",
     "scripts": {
         "start": "nodemon src/index.ts",
-        "build": "npx tsc",
+        "start:js": "node build/index",
+        "clean": "rm -rf build",
+        "build:ts": "npx tsc",
+        "build": "npm run clean && npm run build:ts",
         "tsnode": "ts-node"
     },
     "author": "Udacity",

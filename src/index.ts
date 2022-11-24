@@ -12,5 +12,6 @@ app.use("/convert", convertRouter);
 
 // start the Express server
 app.listen(port, () => {
-    console.log(`server started at http://localhost:${port}`);
+    const time = new Date().toLocaleString("en-US");
+    console.log(`[${time}] server started at http://localhost:${port}`);
 });

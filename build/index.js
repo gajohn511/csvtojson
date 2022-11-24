@@ -13,5 +13,7 @@ app.get("/", function (req, res) {
 app.use("/convert", index_1.default);
 // start the Express server
 app.listen(port, function () {
-    console.log("server started at http://localhost:" + port);
+    var time = new Date().toLocaleString("en-US");
+    console.log("[" + time + "] server started at http://localhost:" + port);
 });
+//# sourceMappingURL=index.js.map

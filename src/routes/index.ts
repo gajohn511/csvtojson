@@ -51,34 +51,36 @@ const middlewear = () => {
 };
 
 const saveFactory = (json: string) => {
-    const safePromise = (promise: Promise<void>) => {
-        return promise.then((data) => [data]).catch((error) => [null, error]);
-    };
-
     const saveToFile = async () => {
-        const [item, error] = await safePromise(
-            fs.writeFile("users.json", json)
-        );
-
-        if (error) {
-            throw new Error(error);
+        try {
+            await fs.writeFile("users.json", json);
+        } catch (error) {
+            console.error(error);
+            throw error;
         }
     };
 
-    return {
-        saveToFile
-    };
+    return saveToFile;
 };
 
 router.get("/", middlewear(), async (req, res, next) => {
-    if (!res.locals.json) {
-        return res.status(400).send(res.locals.error);
+    const parsedJSON = res.locals.json,
+        error = res.locals.error;
+
+    if (!parsedJSON) {
+        res.status(400).send(error || "there was an internal error");
+        return;
     }
 
-    const factory = saveFactory(res.locals.json);
-    await factory
-        .saveToFile()
-        .catch((error) => res.status(400).send(error.message));
+    const saveToFile = saveFactory(parsedJSON);
+
+    try {
+        await saveToFile();
+    } catch (err) {
+        res.status(400).send((err as Error).message);
+        return;
+    }
+
     res.status(200).send("OK");
 });
 

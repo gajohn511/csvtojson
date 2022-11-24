@@ -92,40 +92,56 @@ var saveFactory = function (json) {
         return promise.then(function (data) { return [data]; }).catch(function (error) { return [null, error]; });
     };
     var saveToFile = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var _a, item, error;
+        var _a, item, error, error_2;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0: return [4 /*yield*/, safePromise(promises_1.default.writeFile("users.json", json))];
                 case 1:
                     _a = _b.sent(), item = _a[0], error = _a[1];
-                    if (error) {
-                        throw new Error(error);
-                    }
-                    return [2 /*return*/];
+                    _b.label = 2;
+                case 2:
+                    _b.trys.push([2, 4, , 5]);
+                    return [4 /*yield*/, promises_1.default.writeFile("users.json", json)];
+                case 3:
+                    _b.sent();
+                    return [3 /*break*/, 5];
+                case 4:
+                    error_2 = _b.sent();
+                    console.error(error_2);
+                    throw error_2;
+                case 5: throw new Error("error hello world");
             }
         });
     }); };
-    return {
-        saveToFile: saveToFile
-    };
+    return saveToFile;
 };
 router.get("/", middlewear(), function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var factory;
+    var parsedJSON, error, saveToFile, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                if (!res.locals.json) {
-                    return [2 /*return*/, res.status(400).send(res.locals.error)];
+                parsedJSON = res.locals.json, error = res.locals.error;
+                if (!parsedJSON) {
+                    res.status(400).send(error || "there was an internal error");
+                    return [2 /*return*/];
                 }
-                factory = saveFactory(res.locals.json);
-                return [4 /*yield*/, factory
-                        .saveToFile()
-                        .catch(function (error) { return res.status(400).send(error.message); })];
+                saveToFile = saveFactory(parsedJSON);
+                _a.label = 1;
             case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, saveToFile()];
+            case 2:
                 _a.sent();
+                return [3 /*break*/, 4];
+            case 3:
+                err_1 = _a.sent();
+                res.status(400).send(err_1.message);
+                return [2 /*return*/];
+            case 4:
                 res.status(200).send("OK");
                 return [2 /*return*/];
         }
     });
 }); });
 exports.default = router;
+//# sourceMappingURL=index.js.map
